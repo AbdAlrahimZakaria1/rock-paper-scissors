@@ -1,6 +1,6 @@
-const rock = "rock";
-const paper = "paper";
-const scissors = "scissors";
+const rock = "Rock";
+const paper = "Paper";
+const scissors = "Scissors";
 let playerScore = 0;
 let pcScore = 0;
 
@@ -22,21 +22,15 @@ function computerSelection() {
   }
 }
 
-function playerSelection() {
-  let playerInput = prompt("Enter your selection (Rock-Paper-Scissors)");
-  playerInput = playerInput.toLowerCase();
-  if (
-    playerInput !== rock &&
-    playerInput !== paper &&
-    playerInput !== scissors
-  ) {
-    console.warn(`Player input is wrong! input is ${playerInput}`);
-    return;
-  }
-  return playerInput;
+function getPlayerSelection() {
+  let playerSelection = this.textContent;
+  console.log(playerSelection);
+  game(playerSelection);
+  return playerSelection;
 }
 
 function playRound(playerSelection, computerSelection) {
+  console.log(`player ${playerSelection} ----- pc ${computerSelection}`);
   let winner = "Tie";
   if (playerSelection == rock && computerSelection == paper) winner = "PC";
   else if (playerSelection == rock && computerSelection == scissors)
@@ -49,28 +43,37 @@ function playRound(playerSelection, computerSelection) {
     winner = "PC";
   else if (playerSelection == scissors && computerSelection == paper)
     winner = "Player";
-
-  console.log(
-    `player choice: ${playerSelection} - pc choice: ${computerSelection} - winner is: ${winner}`
-  );
   return winner;
 }
 
-function round() {
-  console.log(`score is: Player ${playerScore} - PC ${pcScore}`);
-  let winner = playRound(playerSelection(), computerSelection());
+function round(playerSelection) {
+  let winner = playRound(playerSelection, computerSelection());
   if (winner.toLowerCase() == "pc") {
     pcScore++;
   } else if (winner.toLowerCase() == "player") {
     playerScore++;
-  } else round();
-
-  // TODO
-  // the score variables here dont override global variables - we need to do something about that
+  }
+  const playerScoreElement = document.querySelector(".player");
+  playerScoreElement.textContent = playerScore;
+  const PcScoreElement = document.querySelector(".pc");
+  PcScoreElement.textContent = pcScore;
 }
-function game() {
-  round();
-  round();
-  round();
-  round();
+
+function game(playerSelection) {
+  if (playerScore < 5 && pcScore < 5) {
+    round(playerSelection);
+  } else {
+    let winner = playerScore > pcScore ? "You" : "PC";
+    const winnerElement = document.querySelector(".winner");
+    winnerElement.textContent = winner;
+  }
+}
+
+let playButton = document.querySelector(".play .action-button");
+playButton.addEventListener("click", gameSimulator);
+function gameSimulator(e) {
+  let buttons = document.querySelectorAll(".action-choices .action-button");
+  buttons.forEach((button) =>
+    button.addEventListener("click", getPlayerSelection)
+  );
 }
